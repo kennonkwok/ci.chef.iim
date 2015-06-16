@@ -61,7 +61,24 @@ maybe_secure_storage_file = new_resource.secure_storage_file
   end
 
   #TODO: to check if an application has been installed, we should check if the responsefile has been altered and remove the response in case the execute call fails
-  install_command = "#{im_dir}/imcl -showProgress #{'-accessRights nonAdmin' unless im_user == 'root'} -acceptLicense input #{::File.path(response_file)} -log /tmp/install_log.xml #{credentials_bash_snippet}"
+  if response_file
+    install_command = "#{im_dir}/imcl -showProgress #{'-accessRights nonAdmin' unless im_user == 'root'} -acceptLicense input #{::File.path(response_file)} -log /tmp/install_log.xml #{credentials_bash_snippet}"
+  else
+    directory new_resource.installation_directory do
+      owner im_user
+      group im_group
+    end
+
+    install_command = "#{im_dir}/imcl install #{new_resource.name} \
+                      -showProgress \
+                      -repositories #{new_resource.repositories} \
+                      -installationDirectory #{new_resource.installation_directory} \
+                      -sharedResourcesDirectory #{im_base_dir}/IMShared \
+                      #{'-accessRights nonAdmin' unless im_user == 'root'} \
+                      -acceptLicense \
+                      -log /tmp/install_log.xml #{credentials_bash_snippet}"
+  end
+
   execute "install #{new_resource.name}" do
     user im_user
     group im_group

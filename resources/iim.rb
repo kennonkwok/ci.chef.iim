@@ -95,4 +95,7 @@ attribute :response_hash, :kind_of => Hash, :default => nil
 attribute :secure_storage_file, :kind_of => String, :default => nil
 #<> @attribute master_password_file Sets the masterPasswordFile imcl option.
 attribute :master_password_file, :kind_of => String, :default => nil
+# simple lwrp interface attributes
+attribute :installation_directory, :kind_of => String, :default => nil
+attribute :repositories, :kind_of => String, :default => nil
 
