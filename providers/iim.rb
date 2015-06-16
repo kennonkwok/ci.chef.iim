@@ -27,7 +27,6 @@ im_group = node[:im][:group]
 
 maybe_master_password_file = new_resource.master_password_file
 maybe_secure_storage_file = new_resource.secure_storage_file
-maybe_response_file = new_resource.response_file
   credentials_bash_snippet = '' #this goes here for later
 
   #First check for a secure_storage file. 
@@ -40,18 +39,24 @@ maybe_response_file = new_resource.response_file
       end
    end
 
-  if ::File.file?(maybe_response_file)
-    response_file = maybe_response_file
+  if new_resource.response_file
+    response_file = new_resource.response_file
   elsif new_resource.response_hash
-	new_contents = []
+    new_contents = []
     generate_xml('  ', 'agent-input', new_resource.response_hash, new_contents)
-    response_file = Tempfile.new("ibm-installation-manager-responsefile-for-#{new_resource.name}", :encoding => 'utf-8')
+    response_file = Tempfile.new("iim_response", :encoding => 'utf-8')
 
-    file response_file do
+    file response_file.path do
       owner im_user
       group im_group
       content new_contents.join('\n')
       backup false
+    end
+
+    directory 'install path for new_resource.name' do
+      path new_resource.response_hash[:profile][:installLocation]
+      owner im_user
+      group im_group
     end
   end
 
