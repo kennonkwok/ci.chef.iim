@@ -32,7 +32,7 @@ end
 user im_user do
   comment 'IBM Installation Manager'
   gid im_group
-  home im_base_dir
+  home im_data_dir
   shell '/bin/sh'
   system true
   not_if { im_user == 'root' }
