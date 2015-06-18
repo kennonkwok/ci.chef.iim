@@ -67,6 +67,7 @@ maybe_secure_storage_file = new_resource.secure_storage_file
     directory new_resource.installation_directory do
       owner im_user
       group im_group
+      recursive true
     end
 
     install_command = "#{im_dir}/imcl install #{new_resource.name} \
